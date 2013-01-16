@@ -59,13 +59,11 @@ default:
     parameters:
       drupal_users:
         subscriber:
-          mfheadley/password
+          catch/password
         admin:
           douggreen/password
         mail:
           douggreentest/password/gmail.com/imap.gmail.com:993
-        mailchimp:
-          apikey
 
   extensions:
     Behat\MinkExtension\Extension:
