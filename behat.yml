@@ -1,0 +1,19 @@
+default:
+  paths:
+    features: 'features'
+    bootstrap: 'features/bootstrap'
+  context:
+    class: Tag1Context
+    parameters:
+      default_browser: 'goutte'
+      user_account: "My Account"
+  extensions:
+    Behat\MinkExtension\Extension:
+      goutte: ~
+      selenium2: ~
+      sahi: ~
+      base_url: http://local.example.com/
+#     javascript_session: sahi
+
+imports:
+  - behat.local.yml
