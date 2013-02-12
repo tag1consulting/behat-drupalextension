@@ -178,29 +178,6 @@ class Tag1Context extends DrupalContext {
    */
 
   /**
-   * Override DrupalContext::whoami().
-   */
-  public function whoami() {
-    $page_element = $this->getSession()->getPage();
-    if (!$page_element) {
-      throw new Exception('Page not found.');
-    }
-    try {
-      $username_element = $page_element->find('xpath', "//div[@class='username']");
-      if ($username_element) {
-        // Strip name inside HTML comment <!--username-->.
-        $username = $username_element->getHtml();
-        if ($username) {
-          return substr($username, 4, strlen($username) - 7);
-        }
-      }
-    }
-    catch (\Exception $e) {
-    }
-    return $this->tag1Parameters['user_account'];
-  }
-
-  /**
    * Visit a given path, and check for errors.
    *
    * @see DrupalExtension::iAmAt().
@@ -800,6 +777,11 @@ class Tag1Context extends DrupalContext {
     // Login.
     $this->userLogin();
 
+    // Save the newly logged in username as their email.
+    $this->getMailCreds();
+    $this->mailCreds['email'] = $this->user->name;
+    $this->vars['mail'] = $this->user->name;
+
     return TRUE;
   }
 
@@ -839,9 +821,6 @@ class Tag1Context extends DrupalContext {
    * @param $password
    */
   public function iLoginAsUsernameWithPassword($username, $password) {
-    // Save the current DrupalExtension login user.
-    $user = $this->user;
-
     // Create a new DrupalExtension login user,
     // for the username, password pair.
     // Note that we do not need to set the role for login.
@@ -858,8 +837,10 @@ class Tag1Context extends DrupalContext {
     catch (\Exception $e) {
     }
 
-    // Restore the DrupalExtension login user.
-    $this->user = $user;
+    // Save the newly logged in username as their email.
+    $this->getMailCreds();
+    $this->mailCreds['email'] = $this->user->name;
+    $this->vars['mail'] = $this->user->name;
 
     // If DrupalExtension threw an exception,
     // throw it up the function stack now.
@@ -891,7 +872,7 @@ class Tag1Context extends DrupalContext {
     $user_account_text = $this->tag1Parameters['user_account'];
     if ($user != $user_account_text) {
       // Logout.
-      $this->getSession()->visit($this->locatePath('/logout'));
+      $this->logout();
     }
 
     // Go to the user page.
@@ -901,6 +882,7 @@ class Tag1Context extends DrupalContext {
     if ($page_title == $user_account_text) {
       // If I see this, I'm not logged in at all so log in.
       $this->customLogin();
+
       // Check that the login was successful.
       $user = $this->whoami();
       if (strtolower($user) == strtolower($this->user->name)) {
@@ -909,7 +891,7 @@ class Tag1Context extends DrupalContext {
       }
       throw new \Exception('Not logged in.');
     }
-    throw new \Exception('Failed to reach the login page.');
+    throw new \Exception('Failed to reach the login page, found "' . $page_title . '" instead.');
   }
 
   /**
@@ -983,6 +965,51 @@ class Tag1Context extends DrupalContext {
     catch (\Exception $e) {
       throw new \Exception("Non-existant user/password for $property_name:$name please check behat.local.yml.");
     }
+  }
+
+  /**
+   * Helper function returns who the current user is.
+   *
+   * There is no good solution for this with standard Drupal.
+   *
+   * The following HTML should be added to the footer:
+   *
+   * @code
+   *   <div class="username"><!--username--></div>
+   * @endcode
+   *
+   * One solution is to do this in template.php:
+   *
+   * @code
+   *   function yourtheme_preprocess_page(&$vars) {
+   *     if (user_is_logged_in()) {
+   *       $vars['page']['footer']['username'] = array(
+   *         '#prefix' => '<div class="username"><!--',
+   *         '#markup' => $GLOBALS['user']->name,
+   *         '#suffix' => '--></div>',
+   *       );
+   *     }
+   *   }
+   * @endcode
+   */
+  public function whoami() {
+    $page_element = $this->getSession()->getPage();
+    if (!$page_element) {
+      throw new Exception('Page not found.');
+    }
+    try {
+      $username_element = $page_element->find('xpath', "//div[@class='username']");
+      if ($username_element) {
+        // Strip name inside HTML comment <!--username-->.
+        $username = $username_element->getHtml();
+        if ($username) {
+          return substr($username, 4, strlen($username) - 7);
+        }
+      }
+    }
+    catch (\Exception $e) {
+    }
+    return $this->tag1Parameters['user_account'];
   }
 
   /* @} End of "defgroup Login functions".
