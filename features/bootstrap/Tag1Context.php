@@ -285,7 +285,11 @@ class Tag1Context extends DrupalContext {
    * @Given /^(?:|I )wait (?:|for )"(?P<seconds>[^"]*)" second(?:|s)$/
    */
   public function iWaitForSeconds($seconds) {
-    usleep((int) ($seconds * 1000000));
+    print "    Wait $seconds";
+    while ($seconds --) {
+      usleep(1000000);
+      print $seconds ? ((($seconds % 10) == 0) ? $seconds : ".") : "\n";
+    }
   }
 
   /**
