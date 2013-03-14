@@ -20,11 +20,16 @@ composor.json:
 }
 ```
 
+Find and download the current Selenium standalone server from https://code.google.com/p/selenium/downloads/list.
+It's probably that the version listed below is no longer the most current.
+
 ```
 $ curl http://getcomposer.org/installer | php
 $ php composer.phar install
-$ curl http://selenium.googlecode.com/files/selenium-server-standalone-2.25.0.jar > selenium-server-standalone-2.25.0.jar
+$ curl http://selenium.googlecode.com/files/selenium-server-standalone-2.31.0.jar > selenium-server-standalone-2.31.0.jar
 ```
+
+You will also most likely want the latest version of Firefox.
 
 Start the Selenium server:
 
