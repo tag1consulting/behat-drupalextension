@@ -391,7 +391,7 @@ class DrupalContext extends MinkContext implements DrupalAwareInterface {
    * @Then /^I should see the heading "(?P<heading>[^"]*)" in the "(?P<region>[^"]*)"(?:| region)$/
    * @Then /^I should see the "(?P<heading>[^"]*)" heading in the "(?P<region>[^"]*)"(?:| region)$/
    */
-  public function iShouldSeeTheHeadingInTheRegion($heading, $region) {
+  public function assertRegionHeading($heading, $region) {
     $page = $this->getSession()->getPage();
     $regionObj = $page->find('region', $region);
     if (!$regionObj) {
@@ -416,7 +416,7 @@ class DrupalContext extends MinkContext implements DrupalAwareInterface {
   /**
    * @When /^I (?:follow|click) "(?P<link>[^"]*)" in the "(?P<region>[^"]*)"(?:| region)$/
    */
-  public function iFollowLinkInTheRegion($link, $region) {
+  public function assertRegionLinkFollow($link, $region) {
     // Find the region requested
     $regionObj = $this->getSession()->getPage()->find('region', $region);
     if (empty($regionObj)) {
@@ -447,7 +447,7 @@ class DrupalContext extends MinkContext implements DrupalAwareInterface {
   /**
    * @Then /^I should see (?:the text |)"(?P<text>[^"]*)" in the "(?P<region>[^"]*)"(?:| region)$/
    */
-  public function iShouldTextSeeInTheRegion($text, $region) {
+  public function assertRegionText($text, $region) {
     // Find the region requested
     $regionObj = $this->getSession()->getPage()->find('region', $region);
     if (empty($regionObj)) {
@@ -463,7 +463,7 @@ class DrupalContext extends MinkContext implements DrupalAwareInterface {
   /**
    * @Then /^I should not see (?:the text |)"(?P<text>[^"]*)" in the "(?P<region>[^"]*)"(?:| region)$/
    */
-  public function assertTextNotRegion($text, $region) {
+  public function assertNotRegionText($text, $region) {
     // Find the region requested
     $regionObj = $this->getSession()->getPage()->find('region', $region);
     if (empty($regionObj)) {
@@ -486,13 +486,26 @@ class DrupalContext extends MinkContext implements DrupalAwareInterface {
    *
    * @Given /^I press "(?P<button>[^"]*)" in the "(?P<region>[^"]*)"(?:| region)$/
    */
-  public function assertPressButtonRegion($button, $region) {
+  public function assertRegionPressButton($button, $region) {
     $regionObj = $this->getSession()->getPage()->find('region', $region);
     $buttonObj = $regionObj->findButton($button);
     if (empty($buttonObj)) {
       throw new \Exception(sprintf("The button '%s' was not found in the region '%s' on the page %s", $button, $region, $this->getSession()->getCurrentUrl()));
     }
     $regionObj->pressButton($button);
+  }
+
+  /**
+   * Fills in a form field with id|name|title|alt|value in the specified region.
+   *
+   * @Given /^(?:|I )fill in "(?P<value>(?:[^"]|\\")*)" for "(?P<field>(?:[^"]|\\")*)" in the "(?P<region>[^"]*)"(?:| region)$/
+   * @Given /^(?:|I )fill in "(?P<field>(?:[^"]|\\")*)" with "(?P<value>(?:[^"]|\\")*)" in the "(?P<region>[^"]*)"(?:| region)$/
+   */
+  public function regionFillField($field, $value, $region) {
+    $field = $this->fixStepArgument($field);
+    $value = $this->fixStepArgument($value);
+    $regionObj = $this->getSession()->getPage()->find('region', $region);
+    $regionObj->fillField($field, $value);
   }
 
   /**
@@ -552,7 +565,7 @@ class DrupalContext extends MinkContext implements DrupalAwareInterface {
     $element = $this->getSession()->getPage();
     $radiobutton = $id ? $element->findById($id) : $element->find('named', array('radio', $this->getSession()->getSelectorsHandler()->xpathLiteral($label)));
     if ($radiobutton === NULL) {
-      throw new \Exception(sprintf('The radio button with %s "%s" was not found on the page %s', $id ? $id : $label, $this->getSession()->getCurrentUrl()));
+      throw new \Exception(sprintf('The radio button with "%s" was not found on the page %s', $id ? $id : $label, $this->getSession()->getCurrentUrl()));
     }
     $value = $radiobutton->getAttribute('value');
     $labelonpage = $radiobutton->getParent()->getText();
@@ -683,6 +696,25 @@ class DrupalContext extends MinkContext implements DrupalAwareInterface {
       'title' => $title,
       'type' => $type,
       'body' => $this->randomString(255),
+    );
+    $saved = $this->getDriver()->createNode($node);
+
+    // Set internal page on the new node.
+    $this->getSession()->visit($this->locatePath('/node/' . $saved->nid));
+  }
+
+  /**
+   * @Given /^I am viewing my "(?P<type>[^"]*)" node with the title "(?P<title>[^"]*)"$/
+   */
+  public function createMyNode($type, $title) {
+    if (!$this->user->uid) {
+      throw new \Exception(sprintf('There is no current logged in user to create a node for.'));
+    }
+    $node = (object) array(
+      'title' => $title,
+      'type' => $type,
+      'body' => $this->randomString(255),
+      'uid' => $this->user->uid,
     );
     $saved = $this->getDriver()->createNode($node);
 
