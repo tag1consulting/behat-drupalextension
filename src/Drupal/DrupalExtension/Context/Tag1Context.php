@@ -16,6 +16,8 @@
  * and "I see the link".
  */
 
+namespace Drupal\DrupalExtension\Context;
+
 use Drupal\DrupalExtension\Context\DrupalContext;
 use Behat\Behat\Context\Step\Given;
 use Behat\Behat\Context\Step\When;
