@@ -11,7 +11,8 @@ composor.json:
         "behat/mink": "*",
         "behat/mink-goutte-driver": "*",
         "behat/mink-sahi-driver": "*",
-        "drupal/drupal-extension": "*"
+        "drupal/drupal-extension": "*",
+        "tag1consulting/behat-drupalextension"
     },
     "minimum-stability": "dev",
     "config": {

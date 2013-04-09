@@ -1,0 +1,17 @@
+{
+  "name": "tag1consulting/behat-drupalextension",
+  "type": "behat-extension",
+  "description": "Tag1 overrides of Drupal extension for Behat",
+  "keywords": ["drupal", "web", "test"],
+  "homepage": "https://github.com/tag1consulting/behat-drupalextension",
+  "license": "GPL-2.0+",
+  "require": {
+    "drupal/drupal-extension": "*",
+  },
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-0": {
+      "Drupal\\DrupalExtension": "src/"
+    }
+  }
+}
