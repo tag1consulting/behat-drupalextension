@@ -6,7 +6,7 @@
   "homepage": "https://github.com/tag1consulting/behat-drupalextension",
   "license": "GPL-2.0+",
   "require": {
-    "drupal/drupal-extension": "*",
+    "drupal/drupal-extension": "*"
   },
   "minimum-stability": "dev",
   "autoload": {
