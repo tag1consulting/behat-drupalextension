@@ -189,12 +189,12 @@ class Tag1Context extends DrupalContext {
 
     $page_element = $this->getSession()->getPage();
     if (!$page_element) {
-      throw new Exception('Page not found.');
+      throw new \Exception('Page not found.');
     }
     $body = $page_element->getText();
     $parse_error = strstr($body, 'Parse error:') === FALSE;
     if (stristr($body, 'Parse error:') !== FALSE) {
-      throw new Exception('The page has a "' . substr($body, $parse_error, 512) . '"');
+      throw new \Exception('The page has a "' . substr($body, $parse_error, 512) . '"');
     }
 
     // @todo: add checks for other errors.
@@ -220,7 +220,7 @@ class Tag1Context extends DrupalContext {
   public function iShouldSeeTheLink($link, $affirmative = TRUE) {
     $page_element = $this->getSession()->getPage();
     if (!$page_element) {
-      throw new Exception('Page not found.');
+      throw new \Exception('Page not found.');
     }
     $link_element = $this->findLink($page_element, $link);
     if ($affirmative) {
@@ -282,11 +282,11 @@ class Tag1Context extends DrupalContext {
   public function iMouseOver($link) {
     $page_element = $this->getSession()->getPage();
     if (!$page_element) {
-      throw new Exception('Page not found.');
+      throw new \Exception('Page not found.');
     }
     $link_element = $this->findLink($page_element, $link);
     if (!$link_element) {
-      throw new Exception('Link "' . $link . '" not found.');
+      throw new \Exception('Link "' . $link . '" not found.');
     }
     $link_element->mouseOver();
   }
@@ -314,19 +314,19 @@ class Tag1Context extends DrupalContext {
     // Get the page.
     $page_element = $this->getSession()->getPage();
     if (!$page_element) {
-      throw new Exception('Page not found.');
+      throw new \Exception('Page not found.');
     }
 
     // Get the block.
     $block_element = $page_element->find('xpath', "//div[@id='$block']");
     if (!$block_element) {
-      throw new Exception('Block "' . $block . '" not found.');
+      throw new \Exception('Block "' . $block . '" not found.');
     }
 
     // Get the link in the block.
     $link_element = $this->findLink($block_element, $link);
     if (!$link_element) {
-      throw new Exception('Main link "' . $link . '" not found in "' . $block . '".');
+      throw new \Exception('Main link "' . $link . '" not found in "' . $block . '".');
     }
 
     // Click the link.
@@ -345,13 +345,13 @@ class Tag1Context extends DrupalContext {
     // Get the page.
     $page_element = $this->getSession()->getPage();
     if (!$page_element) {
-      throw new Exception('Page not found.');
+      throw new \Exception('Page not found.');
     }
 
     // Get the block.
     $block_element = $page_element->find('xpath', "//div[@id='$block']");
     if (!$block_element) {
-      throw new Exception('Block "' . $block . '" not found.');
+      throw new \Exception('Block "' . $block . '" not found.');
     }
 
     $block_element->checkField($this->fixStepArgument($option));
@@ -369,13 +369,13 @@ class Tag1Context extends DrupalContext {
     // Get the page.
     $page_element = $this->getSession()->getPage();
     if (!$page_element) {
-      throw new Exception('Page not found.');
+      throw new \Exception('Page not found.');
     }
 
     // Get the block.
     $block_element = $page_element->find('xpath', "//div[@id='$block']");
     if (!$block_element) {
-      throw new Exception('Block "' . $block . '" not found.');
+      throw new \Exception('Block "' . $block . '" not found.');
     }
 
     $block_element->uncheckField($this->fixStepArgument($option));
@@ -412,11 +412,11 @@ class Tag1Context extends DrupalContext {
   public function iShouldSeeTheDropdownLink($link, $affirmative = TRUE) {
     $page_element = $this->getSession()->getPage();
     if (!$page_element) {
-      throw new Exception('Page not found.');
+      throw new \Exception('Page not found.');
     }
     $link_element = $this->findLink($page_element, $link);
     if (!$link_element) {
-      throw new Exception('No link to "' . $link . '" on "' . $this->getSession()->getCurrentUrl() . '".');
+      throw new \Exception('No link to "' . $link . '" on "' . $this->getSession()->getCurrentUrl() . '".');
     }
     for ($parent_element = $link_element; $parent_element; $parent_element = $parent_element->getParent()) {
       $class = $parent_element->getAttribute('class');
@@ -425,7 +425,7 @@ class Tag1Context extends DrupalContext {
         if ($style) {
           $styles = explode(';', $style);
           if ($affirmative == empty($styles[1])) {
-            throw new Exception('Link to "' . $link . '" is not hidden by CSS and should be.');
+            throw new \Exception('Link to "' . $link . '" is not hidden by CSS and should be.');
           }
         }
         break;
@@ -456,22 +456,22 @@ class Tag1Context extends DrupalContext {
   public function iShouldSeeTheBreadcrumb($breadcrumb, $affirmative = TRUE) {
     $page_element = $this->getSession()->getPage();
     if (!$page_element) {
-      throw new Exception('Page not found.');
+      throw new \Exception('Page not found.');
     }
     $breadcrumb_element = $page_element->find('xpath', "//span[@class='panel_breadcrumbs']");
     if (!$breadcrumb_element) {
       if ($affirmative) {
-        throw new Exception('No breadcrumb found on the page.');
+        throw new \Exception('No breadcrumb found on the page.');
       }
       return;
     }
     if ($breadcrumb_element->getText() == $breadcrumb) {
       if (!$affirmative) {
-        throw new Exception('The breadcrumb "' . $breadcrumb . '" was found on the page.');
+        throw new \Exception('The breadcrumb "' . $breadcrumb . '" was found on the page.');
       }
     }
     elseif ($affirmative) {
-      throw new Exception('The breadcrumb "' . $breadcrumb . '" was not found on the page.');
+      throw new \Exception('The breadcrumb "' . $breadcrumb . '" was not found on the page.');
     }
   }
 
@@ -492,7 +492,7 @@ class Tag1Context extends DrupalContext {
   public function iShouldSeeDrupalErrors() {
     $page_element = $this->getSession()->getPage();
     if (!$page_element) {
-      throw new Exception('Page not found.');
+      throw new \Exception('Page not found.');
     }
     $body = $page_element->getText();
     $parse_error = strstr($body, 'Parse error:') === FALSE;
@@ -502,7 +502,7 @@ class Tag1Context extends DrupalContext {
     if ($this->getErrorMessages()) {
       return;
     }
-    throw new Exception('I should see errors.');
+    throw new \Exception('I should see errors.');
   }
 
   /**
@@ -513,16 +513,16 @@ class Tag1Context extends DrupalContext {
   public function iShouldNotSeeDrupalErrors() {
     $page_element = $this->getSession()->getPage();
     if (!$page_element) {
-      throw new Exception('Page not found.');
+      throw new \Exception('Page not found.');
     }
     $body = $page_element->getText();
     $parse_error = strstr($body, 'Parse error:') === FALSE;
     if (stristr($body, 'Parse error:') !== FALSE) {
-      throw new Exception('The page has a "' . substr($body, $parse_error, 512) . '".');
+      throw new \Exception('The page has a "' . substr($body, $parse_error, 512) . '".');
     }
     $errors = $this->getErrorMessages();
     if ($errors) {
-      throw new Exception('The page Drupal errors "' . $errors . '".');
+      throw new \Exception('The page Drupal errors "' . $errors . '".');
     }
   }
 
@@ -569,7 +569,7 @@ class Tag1Context extends DrupalContext {
    */
   public function iShouldReceiveMail($title, $affirmative = TRUE) {
     if (!function_exists('imap_open')) {
-      throw new Exception('PHP imap not installed.');
+      throw new \Exception('PHP imap not installed.');
     }
     $title = $this->fixStepArgument($title);
 
@@ -923,7 +923,7 @@ class Tag1Context extends DrupalContext {
     $page_element->fillField($this->getDrupalText('password_field'), $this->user->pass);
     $submit = $page_element->findButton($this->getDrupalText('log_in'));
     if (!$submit) {
-      throw new Exception('No submit button on "' . $this->getSession()->getCurrentUrl() . '".');
+      throw new \Exception('No submit button on "' . $this->getSession()->getCurrentUrl() . '".');
     }
     $submit->click();
   }
@@ -997,7 +997,7 @@ class Tag1Context extends DrupalContext {
   public function whoami() {
     $page_element = $this->getSession()->getPage();
     if (!$page_element) {
-      throw new Exception('Page not found.');
+      throw new \Exception('Page not found.');
     }
     try {
       $username_element = $page_element->find('xpath', "//div[@class='username']");
