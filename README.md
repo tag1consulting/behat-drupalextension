@@ -35,7 +35,7 @@ You will also most likely want the latest version of Firefox.
 Start the Selenium server:
 
 ```
-$ java --jar selenium-server-standalone-2.25.0.jar
+$ java -jar selenium-server-standalone-2.25.0.jar
 ```
 
 Sahi
