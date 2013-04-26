@@ -12,7 +12,7 @@ composor.json:
         "behat/mink-goutte-driver": "*",
         "behat/mink-sahi-driver": "*",
         "drupal/drupal-extension": "*",
-        "tag1consulting/behat-drupalextension"
+        "tag1consulting/behat-drupalextension": "*"
     },
     "minimum-stability": "dev",
     "config": {
