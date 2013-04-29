@@ -1,10 +1,10 @@
 Getting started
 ---------------
 
-To get started, in /usr/local/behat create composor.json.
+To get started, in /usr/local/behat create composer.json.
 
 ```
-composor.json:
+composer.json:
 {
     "require": {
         "behat/behat": "2.4.*@stable",
