@@ -876,12 +876,9 @@ class Tag1Context extends DrupalContext {
       // Logout.
       $this->logout();
     }
+   $this->getSession()->visit($this->locatePath('/user')); 
 
-    // Go to the user page.
-    $this->getSession()->visit($this->locatePath('/user'));
-    $page_title = $this->getPageTitle();
-
-    if ($page_title == $user_account_text) {
+    if ($this->isLoginForm()) {
       // If I see this, I'm not logged in at all so log in.
       $this->customLogin();
 
@@ -893,7 +890,13 @@ class Tag1Context extends DrupalContext {
       }
       throw new \Exception('Not logged in.');
     }
-    throw new \Exception('Failed to reach the login page, found "' . $page_title . '" instead.');
+    throw new \Exception('Failed to reach the login page.');
+  }
+
+  public function isLoginForm() {
+    $page_element = $this->getSession()->getPage();
+    $button = $page_element->findButton($this->getDrupalText('log_in'));
+    return (bool) $button;
   }
 
   /**
