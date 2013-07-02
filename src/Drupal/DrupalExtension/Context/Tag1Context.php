@@ -235,7 +235,6 @@ class Tag1Context extends DrupalContext {
     }
   }
 
-
   /**
    * Override DrupalContext::iShouldNotSeeTheLink().
    */
