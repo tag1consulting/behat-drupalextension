@@ -235,6 +235,7 @@ class Tag1Context extends DrupalContext {
     }
   }
 
+
   /**
    * Override DrupalContext::iShouldNotSeeTheLink().
    */
@@ -289,6 +290,25 @@ class Tag1Context extends DrupalContext {
       throw new \Exception('Link "' . $link . '" not found.');
     }
     $link_element->mouseOver();
+  }
+
+  /**
+   * Check if a button exists on a page.
+   *
+   * @Given /^I should see the button "([^"]*)"$/
+   *
+   * @param string $button
+   *   Button text, CSS class, or CSS ID to look for.
+   */
+   public function iShouldSeeTheButton($button) {
+    $page_element = $this->getSession()->getPage();
+    if (!$page_element) {
+      throw new \Exception('Page not found.');
+    }
+    $button_element = $this->findButton($page_element, $button);
+    if (!$button_element) {
+      throw new \Exception('Button "' . $button . '" not found.');
+    }
   }
 
   /**
@@ -883,8 +903,7 @@ class Tag1Context extends DrupalContext {
       $this->customLogin();
 
       // Check that the login was successful.
-      $user = $this->whoami();
-      if (strtolower($user) == strtolower($this->user->name)) {
+      if ($this->loggedIn()) {
         // Successfully logged in.
         return;
       }
@@ -910,7 +929,7 @@ class Tag1Context extends DrupalContext {
    * Determine if the a user is already logged in.
    */
   public function loggedIn() {
-    return $this->whoami() != $this->tag1Parameters['user_account'];
+    return empty($this->user) ? $this->whoami() != $this->tag1Parameters['user_account'] : $this->whoami() == $this->user->name;
   }
 
   /**
