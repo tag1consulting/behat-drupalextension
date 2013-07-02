@@ -292,25 +292,6 @@ class Tag1Context extends DrupalContext {
   }
 
   /**
-   * Check if a button exists on a page.
-   *
-   * @Given /^I should see the button "([^"]*)"$/
-   *
-   * @param string $button
-   *   Button text, CSS class, or CSS ID to look for.
-   */
-   public function iShouldSeeTheButton($button) {
-    $page_element = $this->getSession()->getPage();
-    if (!$page_element) {
-      throw new \Exception('Page not found.');
-    }
-    $button_element = $this->findButton($page_element, $button);
-    if (!$button_element) {
-      throw new \Exception('Button "' . $button . '" not found.');
-    }
-  }
-
-  /**
    * Goto a page without checking for errors.
    *
    * @Given /^I goto "(?P<path>[^"]*)"$/
