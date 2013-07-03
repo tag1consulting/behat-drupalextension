@@ -876,24 +876,26 @@ class Tag1Context extends DrupalContext {
       // Logout.
       $this->logout();
     }
+   $this->getSession()->visit($this->locatePath('/user')); 
 
-    // Go to the user page.
-    $this->getSession()->visit($this->locatePath('/user'));
-    $page_title = $this->getPageTitle();
-
-    if ($page_title == $user_account_text) {
+    if ($this->isLoginForm()) {
       // If I see this, I'm not logged in at all so log in.
       $this->customLogin();
 
       // Check that the login was successful.
-      $user = $this->whoami();
-      if (strtolower($user) == strtolower($this->user->name)) {
+      if ($this->loggedIn()) {
         // Successfully logged in.
         return;
       }
       throw new \Exception('Not logged in.');
     }
-    throw new \Exception('Failed to reach the login page, found "' . $page_title . '" instead.');
+    throw new \Exception('Failed to reach the login page.');
+  }
+
+  public function isLoginForm() {
+    $page_element = $this->getSession()->getPage();
+    $button = $page_element->findButton($this->getDrupalText('log_in'));
+    return (bool) $button;
   }
 
   /**
@@ -907,7 +909,7 @@ class Tag1Context extends DrupalContext {
    * Determine if the a user is already logged in.
    */
   public function loggedIn() {
-    return $this->whoami() != $this->tag1Parameters['user_account'];
+    return empty($this->user) ? $this->whoami() != $this->tag1Parameters['user_account'] : $this->whoami() == $this->user->name;
   }
 
   /**
