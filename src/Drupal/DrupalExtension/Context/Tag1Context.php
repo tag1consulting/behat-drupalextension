@@ -19,6 +19,7 @@
 namespace Drupal\DrupalExtension\Context;
 
 use Drupal\DrupalExtension\Context\DrupalContext;
+use Drupal\Component\Utility\Random;
 use Behat\Behat\Context\Step\Given;
 use Behat\Behat\Context\Step\When;
 use Behat\Behat\Context\Step\Then;
@@ -142,7 +143,7 @@ class Tag1Context extends DrupalContext {
       }
       $name = substr($argument, $start + 1, $end - $start - 1);
       if ($name == 'random') {
-        $this->vars[$name] = $this->randomString(8);
+        $this->vars[$name] = Random::name(8);
         $random[] = $this->vars[$name];
       }
       elseif ($name == 'mail:new') {
@@ -758,8 +759,8 @@ class Tag1Context extends DrupalContext {
 
     // Create user (and project)
     $user = (object) array(
-      'name' => $this->randomString(8),
-      'pass' => $this->randomString(16),
+      'name' => Random::name(8),
+      'pass' => Random::name(16),
       'role' => $role,
     );
     $user->mail = "{$user->name}@example.com";
@@ -1067,7 +1068,7 @@ class Tag1Context extends DrupalContext {
           'host' => $creds_array[2],
           'imap' => $creds_array[3],
         );
-        $this->mailCreds['email'] = $this->mailCreds['user'] . '+' . $this->randomString(8) . '@' . $this->mailCreds['host'];
+        $this->mailCreds['email'] = $this->mailCreds['user'] . '+' . Random::name(8) . '@' . $this->mailCreds['host'];
       }
     }
     return $this->mailCreds;
